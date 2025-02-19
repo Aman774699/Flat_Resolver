@@ -6,6 +6,7 @@ import com.Flatmate.FightResolver.entities.Userentities;
 import com.Flatmate.FightResolver.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,8 @@ public class Userservice {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
-//        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword())); // Encrypt password
-        user.setPassword(user.getPassword());
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword())); // Encrypt password
+//        user.setPassword(user.getPassword());
         Flatentities flat=user.getFlat();
         flatService.createFlat(flat);
 

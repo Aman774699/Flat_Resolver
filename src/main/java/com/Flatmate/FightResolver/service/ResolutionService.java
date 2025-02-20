@@ -55,18 +55,19 @@ public class ResolutionService {
         );
     }
 
-    // ✅ Get all resolutions
+    // Get all resolutions
     public List<ResolutionDTO> getAllResolutions() {
         return resolutionRepository.findAll().stream().map(resolution -> new ResolutionDTO(
                 resolution.getId(),
                 resolution.getComplaint().getId(),
                 resolution.getComplaint().getTitle(),
                 resolution.getResolver().getId(),
+                resolution.getResolver().getUsername(),
                 resolution.getResolvedAt()
         )).collect(Collectors.toList());
     }
 
-    // ✅ Get resolution by complaint ID
+    //  Get resolution by complaint ID
     public ResolutionDTO getResolutionByComplaint(Long complaintId) {
         Resolutionentities resolution = resolutionRepository.findByComplaintId(complaintId)
                 .orElseThrow(() -> new RuntimeException("Resolution not found for this complaint"));

@@ -1,13 +1,11 @@
 package com.Flatmate.FightResolver.controller;
 
 import com.Flatmate.FightResolver.DTO.VoteDTO;
+import com.Flatmate.FightResolver.entities.Voteentities;
 import com.Flatmate.FightResolver.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/vote")
@@ -17,10 +15,8 @@ public class VoteController {
 
     // Vote (Upvote or Downvote)
     @PostMapping("/upvoteOrdownvote")
-    public ResponseEntity<?> castVote(@RequestParam Long userId,
-                                      @RequestParam Long complaintId,
-                                      @RequestParam boolean isUpvote) {
-        VoteDTO vote = voteService.castVote(userId, complaintId, isUpvote);
+    public ResponseEntity<?> castVote(@RequestBody VoteDTO voteDTO) {
+        VoteDTO vote = voteService.castVote(voteDTO.getUserId(), voteDTO.getComplaintId(), voteDTO.isUpvote());
         if (vote == null) {
             return ResponseEntity.ok("Vote removed.");
         }

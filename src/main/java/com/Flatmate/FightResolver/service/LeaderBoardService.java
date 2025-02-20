@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class LeaderBoardService {
     @Autowired
-    private LeaderBoardRepository leaderboardRepository;
+    private LeaderBoardRepository leaderBoardRepository;
 
     @Autowired
     private FlatRepository flatRepository;
@@ -25,58 +25,38 @@ public class LeaderBoardService {
     @Autowired
     private UserRepository userRepository;
 
-    //  Method to update leaderboard for a user
-    public LeaderBoardDTO updateLeaderboard(Long userId, Long flatId, int complaintsFiled, int complaintsResolved, int karmaChange) {
-        Optional<Userentities> userOpt = userRepository.findById(userId);
-        Optional<Flatentities> flatOpt = flatRepository.findById(flatId);
-
-        if (userOpt.isEmpty() || flatOpt.isEmpty()) {
-            throw new RuntimeException("User or Flat not found");
+    public List<LeaderBoardDTO> getLeaderboardByFlat(Long flatId) {
+        Optional<Flatentities> flatentities=flatRepository.findById(flatId);
+        if(flatentities.isPresent()) {
+            List<Leaderboardentities> leaderboard = leaderBoardRepository.findByFlatId(flatentities.get().getFlat_id());
+            return leaderboard.stream().map(this::convertToDTO).collect(Collectors.toList());
+        }
+        return null;
         }
 
-        Userentities user = userOpt.get();
-        Flatentities flat = flatOpt.get();
+    public LeaderBoardDTO addLeaderboardEntry(LeaderBoardDTO dto) {
+        Flatentities flat = flatRepository.findById(dto.getFlatId()).orElseThrow(() -> new RuntimeException("Flat not found"));
+        Userentities user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Check if leaderboard entry already exists
-        Leaderboardentities leaderboard = leaderboardRepository.findByFlatId(flatId)
-                .stream()
-                .filter(lb -> lb.getUser().getId().equals(userId))
-                .findFirst()
-                .orElse(new Leaderboardentities(null, flat, user, 0, 0, 0));
+        Leaderboardentities entity = new Leaderboardentities();
+        entity.setFlat(flat);
+        entity.setUser(user);
+        entity.setComplaintsFiled(dto.getComplaintsFiled());
+        entity.setComplaintsResolved(dto.getComplaintsResolved());
+        entity.setTotalKarma(dto.getTotalKarma());
 
-        // Update values
-        leaderboard.setComplaintsFiled(leaderboard.getComplaintsFiled() + complaintsFiled);
-        leaderboard.setComplaintsResolved(leaderboard.getComplaintsResolved() + complaintsResolved);
-        leaderboard.setTotalKarma(leaderboard.getTotalKarma() + karmaChange);
-
-        Leaderboardentities savedLeaderboard = leaderboardRepository.save(leaderboard);
-
-        return new LeaderBoardDTO(
-                savedLeaderboard.getId(),
-                flat.getFlat_id(),
-                flat.getFlatCode(),
-                user.getId(),
-                user.getUsername(),
-                savedLeaderboard.getComplaintsFiled(),
-                savedLeaderboard.getComplaintsResolved(),
-                savedLeaderboard.getTotalKarma()
-        );
+        Leaderboardentities savedEntity = leaderBoardRepository.save(entity);
+        return convertToDTO(savedEntity);
     }
 
-    // Get leaderboard rankings by flat
-    public List<LeaderBoardDTO> getLeaderboardByFlat(Long flatId) {
-        return leaderboardRepository.findByFlatId(flatId).stream()
-                .map(lb -> new LeaderBoardDTO(
-                        lb.getId(),
-                        lb.getFlat().getFlat_id(),
-                        lb.getFlat().getFlatCode(),
-                        lb.getUser().getId(),
-                        lb.getUser().getUsername(),
-                        lb.getComplaintsFiled(),
-                        lb.getComplaintsResolved(),
-                        lb.getTotalKarma()
-                ))
-                .sorted((a, b) -> Integer.compare(b.getTotalKarma(), a.getTotalKarma())) // Sort by highest karma
-                .collect(Collectors.toList());
+    private LeaderBoardDTO convertToDTO(Leaderboardentities entity) {
+        LeaderBoardDTO dto = new LeaderBoardDTO();
+        dto.setId(entity.getId());
+        dto.setFlatId(entity.getFlat().getFlat_id());
+        dto.setUserId(entity.getUser().getId());
+        dto.setComplaintsFiled(entity.getComplaintsFiled());
+        dto.setComplaintsResolved(entity.getComplaintsResolved());
+        dto.setTotalKarma(entity.getTotalKarma());
+        return dto;
     }
 }

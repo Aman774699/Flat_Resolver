@@ -18,7 +18,7 @@ public class Leaderboardentities {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "flat_id", nullable = false)
+    @JoinColumn(name = "flat_id", referencedColumnName = "flat_Id")
     private Flatentities flat;
 
     @ManyToOne

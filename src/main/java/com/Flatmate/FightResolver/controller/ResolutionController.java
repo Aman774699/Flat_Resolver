@@ -16,10 +16,8 @@ public class ResolutionController {
 
     //  API to resolve a complaint
     @PostMapping("/resolve")
-    public ResponseEntity<ResolutionDTO> resolveComplaint(
-            @RequestParam Long complaintId,
-            @RequestParam Long resolverId) {
-        return ResponseEntity.ok(resolutionService.resolveComplaint(complaintId, resolverId));
+    public ResponseEntity<ResolutionDTO> resolveComplaint(@RequestBody ResolutionDTO resolutionDTO) {
+        return ResponseEntity.ok(resolutionService.resolveComplaint(resolutionDTO.getComplaintId(),resolutionDTO.getResolverId()));
     }
 
     //  API to get all resolutions

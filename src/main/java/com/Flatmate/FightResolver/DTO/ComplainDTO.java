@@ -1,55 +1,37 @@
-package com.Flatmate.FightResolver.entities;
+package com.Flatmate.FightResolver.DTO;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.Flatmate.FightResolver.entities.Flatentities;
+import com.Flatmate.FightResolver.entities.Userentities;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "complaints")
-//@Getter
-//@Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
-public class Complaintentities {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ComplainDTO {
     private Long id;
-
     private String title;
     private String description;
-    private String type; // Noise, Cleanliness, Bills, Pets, etc.
-    private String severity; // Minor, Annoying, Major, Nuclear
+    private String type;
+    private String severity;
+    private String filedBy;
+    private String flatCode;
+    private int upvotes;
+    private int downvotes;
+    private boolean resolved;
+    private LocalDateTime timestamp;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private Userentities filedBy;
-
-    @ManyToOne
-    @JoinColumn(name = "flat_id", nullable = false)
-    private Flatentities flat;
-
-    private int upvotes = 0;
-    private int downvotes = 0;
-    private boolean resolved = false;
-
-    private LocalDateTime timestamp=LocalDateTime.now();
-
-    public Complaintentities(String description, int downvotes, Userentities filedBy, Flatentities flat, Long id, boolean resolved, String severity, LocalDateTime timestamp, String title, String type, int upvotes) {
-        this.description = description;
-        this.downvotes = downvotes;
-        this.filedBy = filedBy;
-        this.flat = flat;
+    public ComplainDTO(Long id, String title, String description, String type, String severity,
+                       String filedBy, String flatCode, int upvotes, int downvotes,
+                       boolean resolved, LocalDateTime timestamp) {
         this.id = id;
-        this.resolved = resolved;
-        this.severity = severity;
-        this.timestamp = timestamp;
         this.title = title;
+        this.description = description;
         this.type = type;
+        this.severity = severity;
+        this.filedBy = filedBy;
+        this.flatCode = flatCode;
         this.upvotes = upvotes;
+        this.downvotes = downvotes;
+        this.resolved = resolved;
+        this.timestamp = timestamp;
     }
 
     public String getDescription() {
@@ -68,20 +50,20 @@ public class Complaintentities {
         this.downvotes = downvotes;
     }
 
-    public Userentities getFiledBy() {
+    public String getFiledBy() {
         return filedBy;
     }
 
-    public void setFiledBy(Userentities filedBy) {
+    public void setFiledBy(String filedBy) {
         this.filedBy = filedBy;
     }
 
-    public Flatentities getFlat() {
-        return flat;
+    public String getFlatCode() {
+        return flatCode;
     }
 
-    public void setFlat(Flatentities flat) {
-        this.flat = flat;
+    public void setFlatCode(String flatCode) {
+        this.flatCode = flatCode;
     }
 
     public Long getId() {

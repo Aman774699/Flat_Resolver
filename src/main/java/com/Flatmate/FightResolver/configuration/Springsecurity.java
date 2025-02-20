@@ -28,7 +28,7 @@ public class Springsecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(cd->cd.disable()).authorizeHttpRequests(request->request
                 .requestMatchers("/auth/login", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/journal/**","/user/**").authenticated().
+                .requestMatchers("/Complaints/**","/user/**").authenticated().
                 requestMatchers("/public/**")//.hasRole("ADMIN").anyRequest()
                 .permitAll()).sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS).maximumSessions(1));
         http.addFilterBefore(jwtFilters, UsernamePasswordAuthenticationFilter.class);

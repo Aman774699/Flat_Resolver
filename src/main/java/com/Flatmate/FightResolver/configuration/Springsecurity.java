@@ -28,12 +28,13 @@ public class Springsecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(cd->cd.disable()).authorizeHttpRequests(request->request
                 .requestMatchers("/auth/login", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/vote/**","/Complaints/**").authenticated().
+                .requestMatchers("/vote/**","/Complaints/**","/Resolution/**","/LeaderBoard/**").authenticated().
                 requestMatchers("/public/**")//.hasRole("ADMIN").anyRequest()
                 .permitAll()).sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS).maximumSessions(1));
-        http.addFilterBefore(jwtFilters, UsernamePasswordAuthenticationFilter.class);
+                http.addFilterBefore(jwtFilters, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

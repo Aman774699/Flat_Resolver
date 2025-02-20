@@ -27,5 +27,5 @@ public class Resolutionentities {
     @JoinColumn(name = "resolver_id", nullable = false)
     private Userentities resolver; // User who resolved the issue
 
-    private LocalDateTime resolvedAt;
+    private LocalDateTime resolvedAt=LocalDateTime.now();
 }

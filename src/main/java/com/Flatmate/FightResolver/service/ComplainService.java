@@ -44,6 +44,7 @@ public class ComplainService {
         return mapToDTO(complaint);
     }
 
+//    GetComplainbyflatcode
     public List<ComplainDTO> getComplaintsByFlat(String flatCode) {
         List<Complaintentities> complaints = complaintRepository.findByFlat_FlatCode(flatCode);
         return complaints.stream().map(this::mapToDTO).collect(Collectors.toList());
